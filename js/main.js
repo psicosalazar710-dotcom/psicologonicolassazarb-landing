@@ -63,3 +63,64 @@ document.querySelectorAll('.video-frame').forEach(frame => {
   video.addEventListener('pause', () => { if (video.currentTime === 0) frame.classList.remove('playing'); });
   video.addEventListener('ended', () => { frame.classList.remove('playing'); video.removeAttribute('controls'); });
 });
+
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ── Parallax sutil — colage de "Sobre mí" ──
+   Cada marco se mueve a una velocidad ligeramente distinta al hacer scroll,
+   dando sensación de profundidad por capas. Se anima el contenedor, nunca
+   la imagen, para no chocar con el zoom de :hover que ya tiene la imagen. */
+if (!reduceMotion) {
+  const parallaxFrames = document.querySelectorAll('.about-collage .img-frame');
+  if (parallaxFrames.length) {
+    let ticking = false;
+    const updateParallax = () => {
+      const vh = window.innerHeight;
+      parallaxFrames.forEach((frame, i) => {
+        const rect = frame.getBoundingClientRect();
+        const progress = (rect.top + rect.height / 2 - vh / 2) / vh;
+        const rate = i % 2 === 0 ? 18 : -18;
+        frame.style.transform = `translateY(${(progress * rate).toFixed(2)}px)`;
+      });
+      ticking = false;
+    };
+    window.addEventListener('scroll', () => {
+      if (!ticking) { requestAnimationFrame(updateParallax); ticking = true; }
+    }, { passive: true });
+    updateParallax();
+  }
+}
+
+/* ── Cifras que crecen desde cero al entrar en pantalla ──
+   Lee el valor ya aplicado por config.js (ej. "+300"), separa el
+   prefijo/sufijo no numérico del número, y anima 0 → número. */
+function animateCounter(el) {
+  const raw = el.textContent.trim();
+  const match = raw.match(/^(\D*)(\d[\d.,]*)(\D*)$/);
+  if (!match) return;
+  const [, prefix, numStr, suffix] = match;
+  const target = parseInt(numStr.replace(/[.,]/g, ''), 10);
+  if (isNaN(target)) return;
+  const duration = 1300;
+  const start = performance.now();
+  const tick = (now) => {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = prefix + Math.round(target * eased) + suffix;
+    if (progress < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+const counterEls = document.querySelectorAll('[data-cfg="stats.patients"], [data-cfg="stats.yearsExperience"]');
+if (counterEls.length && !reduceMotion) {
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounter(entry.target);
+        counterObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.6 });
+  counterEls.forEach(el => counterObserver.observe(el));
+}

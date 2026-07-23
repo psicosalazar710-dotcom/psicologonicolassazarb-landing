@@ -173,8 +173,34 @@ em { font-style: italic; color: var(--gold-deep); }
 /* ── MOTION ── */
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity var(--dur-slow) var(--ease), transform var(--dur-slow) var(--ease); }
 .reveal.visible { opacity: 1; transform: none; }
+
+/* Variantes — cada sección entra distinto, nunca se repite el mismo efecto seguido */
+.reveal-scale { transform: scale(0.94); }
+.reveal-left  { transform: translateX(-32px); }
+.reveal-right { transform: translateX(32px); }
+.reveal-blur  { filter: blur(6px); }
+.reveal-blur.visible { filter: blur(0); transition: opacity var(--dur-slow) var(--ease), transform var(--dur-slow) var(--ease), filter var(--dur-slow) var(--ease); }
+
+/* Cascada — los hijos de un grupo revelado entran en secuencia, no de golpe */
+.problems-grid .problem-card:nth-child(1) { transition-delay: 0s; }
+.problems-grid .problem-card:nth-child(2) { transition-delay: 0.08s; }
+.problems-grid .problem-card:nth-child(3) { transition-delay: 0.16s; }
+.problems-grid .problem-card:nth-child(4) { transition-delay: 0.24s; }
+.authority-stats.reveal-scale .authority-stat:nth-child(1) { transition-delay: 0s; }
+.authority-stats.reveal-scale .authority-stat:nth-child(2) { transition-delay: 0.1s; }
+.authority-stats.reveal-scale .authority-stat:nth-child(3) { transition-delay: 0.2s; }
+.about-collage.reveal-scale .img-frame:nth-child(1) { transition-delay: 0s; }
+.about-collage.reveal-scale .img-frame:nth-child(2) { transition-delay: 0.1s; }
+.about-collage.reveal-scale .img-frame:nth-child(3) { transition-delay: 0.2s; }
+.gallery-videos.reveal-scale .video-frame:nth-child(1) { transition-delay: 0s; }
+.gallery-videos.reveal-scale .video-frame:nth-child(2) { transition-delay: 0.1s; }
+.gallery-videos.reveal-scale .video-frame:nth-child(3) { transition-delay: 0.2s; }
+.contact-grid.reveal-right .card:nth-child(1) { transition-delay: 0s; }
+.contact-grid.reveal-right .card:nth-child(2) { transition-delay: 0.08s; }
+.contact-grid.reveal-right .card:nth-child(3) { transition-delay: 0.16s; }
+
 @media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1; transform: none; transition: none; }
+  .reveal, .reveal-scale, .reveal-left, .reveal-right, .reveal-blur { opacity: 1; transform: none; filter: none; transition: none; }
   .img-frame:hover img { transform: none; }
 }
 /* ═══════════════════════════════════════════════════════════
