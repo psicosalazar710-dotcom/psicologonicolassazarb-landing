@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="description" content="Agenda tu cita con el Psicólogo Nicolás Salazar Barbosa — Bogotá. Presencial y online.">
+<title>Agendar Cita — Psicólogo Nicolás Salazar Barbosa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#b8935a;--gold-light:#c9a06a;--gold-dim:#8a6f3f;
+  --black:#fbfaf7;--black-mid:#f4f1ea;--black-card:#ffffff;
+  --black-border:#e7e2d8;--white:#14120f;--white-dim:#55504a;
+  --accent:#8a6f3f;--green:#81c784;--red:#c0392b;
+  --font-display:'Cormorant Garamond',serif;
+  --font-body:'Jost',sans-serif;--radius:2px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;scroll-behavior:smooth;}
+body{background:linear-gradient(135deg,var(--black) 0%,#f4f1ea 55%,#efe9db 100%);
+  color:var(--white);font-family:var(--font-body);font-weight:300;
+  line-height:1.7;min-height:100vh;-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}
+button{cursor:pointer;font-family:var(--font-body);-webkit-tap-highlight-color:transparent;}
+
+.header{background:var(--black-card);border-bottom:1px solid var(--black-border);
+  padding:0 5%;height:64px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;}
+.header-logo{font-family:var(--font-display);font-size:1rem;color:var(--gold-light);letter-spacing:0.1em;}
+.back-btn{background:transparent;border:1px solid var(--black-border);color:var(--white-dim);
+  padding:0.4rem 1rem;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;
+  border-radius:var(--radius);transition:all 0.2s;cursor:pointer;}
+.back-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+.wrap{max-width:780px;margin:0 auto;padding:3rem 5%;}
+.page-eyebrow{font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:0.8rem;display:flex;align-items:center;gap:0.8rem;}
+.page-eyebrow::before{content:'';width:28px;height:1px;background:var(--accent);}
+.page-title{font-family:var(--font-display);font-size:clamp(2.2rem,5vw,3.5rem);
+  font-weight:300;line-height:1.1;margin-bottom:0.6rem;}
+.page-title em{font-style:italic;color:var(--gold-light);}
+.page-sub{color:var(--white-dim);font-size:0.9rem;margin-bottom:3rem;max-width:520px;}
+
+/* STEPS */
+.steps{display:flex;margin-bottom:3rem;position:relative;}
+.steps::before{content:'';position:absolute;top:18px;left:18px;right:18px;
+  height:2px;background:var(--black-border);z-index:0;}
+.step{display:flex;flex-direction:column;align-items:center;gap:0.5rem;flex:1;position:relative;z-index:1;}
+.step-num{width:36px;height:36px;border-radius:50%;border:2px solid var(--black-border);
+  background:var(--black-card);display:flex;align-items:center;justify-content:center;
+  font-size:0.78rem;font-weight:500;color:var(--white-dim);transition:all 0.3s;}
+.step.active .step-num{border-color:var(--accent);background:var(--accent);color:#050505;}
+.step.done .step-num{border-color:var(--green);background:var(--green);color:#050505;}
+.step-label{font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--white-dim);text-align:center;}
+.step.active .step-label{color:var(--accent);}
+
+/* PANELS */
+.panel{display:none;}
+.panel.active{display:block;animation:fadeIn 0.3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+/* CARD */
+.card{background:var(--black-card);border:1px solid var(--black-border);
+  border-radius:var(--radius);padding:2rem;margin-bottom:1.2rem;}
+.card-label{font-size:0.65rem;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:1.4rem;display:flex;align-items:center;gap:0.8rem;}
+.card-label::before{content:'';width:20px;height:1px;background:var(--accent);}
+
+/* MODALITY */
+.modality-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
+.modality-card{background:var(--black-mid);border:2px solid var(--black-border);
+  border-radius:var(--radius);padding:1.5rem;cursor:pointer;transition:all 0.25s;text-align:center;
+  user-select:none;}
+.modality-card:hover{border-color:var(--accent);}
+.modality-card.selected{border-color:var(--gold);background:rgba(255,210,127,0.06);}
+.modality-icon{font-size:2rem;margin-bottom:0.6rem;}
+.modality-title{font-family:var(--font-display);font-size:1.1rem;color:var(--white);margin-bottom:0.3rem;}
+.modality-desc{font-size:0.75rem;color:var(--white-dim);line-height:1.5;}
+.modality-badge{display:inline-block;margin-top:0.5rem;font-size:0.65rem;letter-spacing:0.1em;
+  text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:10px;
+  background:rgba(76,162,181,0.15);color:var(--accent);}
+.modality-price{margin-top:0.7rem;font-family:var(--font-display);font-size:1.15rem;color:var(--gold-light);}
+
+.schedule-info{background:var(--black-mid);border:1px solid var(--black-border);
+  border-radius:var(--radius);padding:1.2rem 1.5rem;margin-bottom:1.2rem;}
+.schedule-row{display:flex;justify-content:space-between;align-items:center;
+  padding:0.45rem 0;border-bottom:1px solid rgba(0,48,96,0.5);font-size:0.84rem;}
+.schedule-row:last-child{border-bottom:none;}
+.schedule-hours{color:var(--gold-light);font-weight:500;}
+
+.price-display{text-align:center;padding:0.9rem;background:rgba(255,210,127,0.06);
+  border:1px solid rgba(255,210,127,0.2);border-radius:var(--radius);margin-bottom:1.5rem;
+  font-family:var(--font-display);font-size:1.1rem;color:var(--white-dim);}
+.price-display em{color:var(--gold-light);}
+
+/* DATE */
+.date-scroll{display:flex;gap:0.6rem;overflow-x:auto;padding-bottom:0.5rem;
+  margin-bottom:1.5rem;scrollbar-width:none;}
+.date-scroll::-webkit-scrollbar{display:none;}
+.date-btn{flex-shrink:0;width:66px;padding:0.75rem 0.4rem;background:var(--black-mid);
+  border:1px solid var(--black-border);border-radius:var(--radius);cursor:pointer;
+  text-align:center;transition:all 0.25s;color:var(--white-dim);}
+.date-btn:hover{border-color:var(--accent);}
+.date-btn.selected{border-color:var(--gold);background:rgba(255,210,127,0.08);color:var(--white);}
+.date-btn.closed{opacity:0.3;cursor:not-allowed;}
+.date-dow{font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem;}
+.date-num{font-family:var(--font-display);font-size:1.5rem;line-height:1;color:var(--gold-light);}
+.date-mon{font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;margin-top:0.2rem;}
+
+/* SLOTS */
+.slots-label{font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--white-dim);margin-bottom:0.8rem;}
+.slots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:0.5rem;margin-bottom:1.5rem;}
+.slot-btn{padding:0.6rem;background:var(--black-mid);border:1px solid var(--black-border);
+  border-radius:var(--radius);font-size:0.82rem;color:var(--white-dim);
+  cursor:pointer;transition:all 0.2s;text-align:center;}
+.slot-btn:hover{border-color:var(--accent);color:var(--white);}
+.slot-btn.selected{border-color:var(--gold);background:rgba(255,210,127,0.1);color:var(--gold-light);}
+.slot-btn:disabled{opacity:0.3;cursor:not-allowed;text-decoration:line-through;}
+
+/* FORM */
+.summary-box{background:var(--black-mid);border:1px solid var(--black-border);
+  border-left:3px solid var(--gold);border-radius:var(--radius);padding:1.2rem 1.5rem;margin-bottom:1.5rem;}
+.summary-row{display:flex;gap:1rem;font-size:0.85rem;margin-bottom:0.35rem;}
+.summary-row:last-child{margin-bottom:0;}
+.summary-row strong{color:var(--gold-light);min-width:85px;flex-shrink:0;}
+.summary-row span{color:var(--white-dim);}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.form-group{margin-bottom:1rem;}
+.form-group.full{grid-column:1/-1;}
+.form-group label{display:block;font-size:0.78rem;color:var(--white-dim);margin-bottom:0.4rem;}
+.form-group input,.form-group select,.form-group textarea{
+  width:100%;background:var(--black-mid);border:1px solid var(--black-border);
+  color:var(--white);padding:0.8rem 1rem;font-family:var(--font-body);font-size:1rem;
+  outline:none;transition:border-color 0.25s;border-radius:var(--radius);
+  -webkit-appearance:none;appearance:none;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent);}
+.form-group textarea{height:80px;resize:vertical;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:0.6rem;
+  padding:0.9rem 2rem;font-family:var(--font-body);font-size:0.78rem;font-weight:500;
+  letter-spacing:0.16em;text-transform:uppercase;border:none;
+  border-radius:var(--radius);transition:all 0.25s;cursor:pointer;}
+.btn-gold{background:var(--gold);color:#050505;width:100%;}
+.btn-gold:hover{background:var(--gold-light);transform:translateY(-1px);}
+.btn-gold:disabled{background:var(--black-border);color:var(--white-dim);cursor:not-allowed;transform:none;opacity:0.5;}
+.btn-wa{background:#25D366;color:#fff;width:100%;}
+.btn-wa:hover{background:#20bc5a;transform:translateY(-1px);}
+.btn-outline{background:transparent;border:1px solid var(--black-border);color:var(--white-dim);}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+.btn-row{display:flex;gap:0.8rem;margin-top:0.5rem;}
+.btn-row .btn-outline{max-width:130px;}
+
+/* ALERT */
+.alert{padding:0.9rem 1.2rem;border-radius:var(--radius);font-size:0.83rem;
+  margin-bottom:1.2rem;border-left:3px solid;}
+.alert-error{background:rgba(229,115,115,0.1);border-color:var(--red);color:var(--red);}
+.alert-info{background:rgba(76,162,181,0.08);border-color:var(--accent);color:var(--accent);}
+
+/* SUCCESS */
+.success-wrap{text-align:center;padding:2rem 0;}
+.success-icon{font-size:4.5rem;margin-bottom:1rem;animation:pop 0.5s ease;}
+@keyframes pop{0%{transform:scale(0);}70%{transform:scale(1.15);}100%{transform:scale(1);}}
+.success-title{font-family:var(--font-display);font-size:2.2rem;color:var(--gold-light);margin-bottom:0.5rem;}
+.success-sub{color:var(--white-dim);margin-bottom:2rem;font-size:0.9rem;}
+.success-card{background:var(--black-card);border:1px solid var(--black-border);
+  border-radius:var(--radius);padding:1.5rem;max-width:460px;margin:0 auto 2rem;text-align:left;}
+.wa-note{background:rgba(37,211,102,0.08);border:1px solid rgba(37,211,102,0.25);
+  border-radius:var(--radius);padding:1rem 1.2rem;margin-bottom:1.5rem;
+  font-size:0.85rem;color:#81c784;display:flex;gap:0.8rem;align-items:flex-start;}
+
+@media(max-width:600px){
+  .wrap{padding:2rem 1.2rem;}
+  .form-grid{grid-template-columns:1fr;}
+  .form-group.full{grid-column:1;}
+  .modality-grid{grid-template-columns:1fr;}
+  .steps::before{display:none;}
+  .step-label{display:none;}
+  .card{padding:1.3rem;}
+  .btn-row{flex-direction:column;}
+  .btn-row .btn-outline{max-width:100%;}
+}
+
+/* ── MOBILE ── */
+body { overflow-x: hidden; }
+.date-scroll { -webkit-overflow-scrolling: touch; }
+
+@media (max-width: 600px) {
+  .wrap { padding: 1.5rem 1rem; }
+  .card { padding: 1.2rem; }
+  .modality-grid { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-group.full { grid-column: 1; }
+  .form-group input,
+  .form-group select,
+  .form-group textarea { font-size: 1rem; }
+  .btn-row { flex-direction: column; }
+  .btn-row .btn-outline { max-width: 100%; }
+  .steps::before { display: none; }
+  .step-label { display: none; }
+  .step-num { width: 32px; height: 32px; font-size: 0.72rem; }
+  .slots-grid { grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
+  .slot-btn { padding: 0.55rem 0.3rem; font-size: 0.78rem; }
+  .page-sub { margin-bottom: 2rem; }
+  .summary-box { padding: 1rem; }
+  .summary-row strong { min-width: 70px; }
+}
+
+@media (max-width: 380px) {
+  .slots-grid { grid-template-columns: repeat(2, 1fr); }
+  .page-title { font-size: 2rem; }
+}
+
+/* Touch tap targets */
+@media (hover: none) {
+  .modality-card { min-height: 120px; }
+  .date-btn { min-height: 64px; }
+  .slot-btn { min-height: 44px; }
+  .btn { min-height: 48px; }
+}
+
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-logo">Psicólogo Nicolás Salazar B.</div>
+  <a href="/"><button class="back-btn">← Inicio</button></a>
+</header>
+
+<div class="wrap">
+  <div class="page-eyebrow">Agenda tu cita</div>
+  <h1 class="page-title">Reserva tu <em>espacio</em></h1>
+  <p class="page-sub">Elige el día, horario y modalidad que prefieras. Recibirás la confirmación por WhatsApp.</p>
+
+  <div class="steps">
+    <div class="step active" id="si1"><div class="step-num">1</div><div class="step-label">Modalidad</div></div>
+    <div class="step" id="si2"><div class="step-num">2</div><div class="step-label">Fecha y hora</div></div>
+    <div class="step" id="si3"><div class="step-num">3</div><div class="step-label">Tus datos</div></div>
+    <div class="step" id="si4"><div class="step-num">4</div><div class="step-label">Confirmación</div></div>
+  </div>
+
+  <!-- PANEL 1 -->
+  <div class="panel active" id="panel-1">
+    <div class="card">
+      <div class="card-label">Paso 1 — Elige la modalidad</div>
+      <div class="modality-grid">
+        <div class="modality-card" id="mod-presencial" onclick="selectModality('Presencial','$120.000 COP')">
+          <div class="modality-icon">🏢</div>
+          <div class="modality-title">Presencial</div>
+          <p class="modality-desc">Sesión en el consultorio en Bogotá.</p>
+          <span class="modality-badge">Cl. 52 #20-15</span>
+          <div class="modality-price">$120.000 COP</div>
+        </div>
+        <div class="modality-card" id="mod-online" onclick="selectModality('Online','$100.000 COP')">
+          <div class="modality-icon">💻</div>
+          <div class="modality-title">Online</div>
+          <p class="modality-desc">Videollamada desde cualquier lugar.</p>
+          <span class="modality-badge">Todo Colombia</span>
+          <div class="modality-price">$100.000 COP</div>
+        </div>
+        <div class="modality-card" id="mod-exterior" onclick="selectModality('Exterior','$120.000 COP')">
+          <div class="modality-icon">🌎</div>
+          <div class="modality-title">Desde el exterior</div>
+          <p class="modality-desc">Videollamada para pacientes fuera de Colombia.</p>
+          <span class="modality-badge">Internacional</span>
+          <div class="modality-price">$120.000 COP</div>
+        </div>
+      </div>
+      <div class="schedule-info">
+        <div style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:0.8rem;">Horarios de atención</div>
+        <div class="schedule-row"><span style="color:var(--white-dim);">Lunes a Viernes</span><span class="schedule-hours">9:00 AM — 9:00 PM</span></div>
+        <div class="schedule-row"><span style="color:var(--white-dim);">Sábados</span><span class="schedule-hours">9:00 AM — 12:00 PM</span></div>
+        <div class="schedule-row"><span style="color:var(--white-dim);">Domingos</span><span style="color:var(--white-dim);opacity:0.4;">No disponible</span></div>
+      </div>
+      <div class="price-display" id="price-display">Selecciona una modalidad para ver el valor</div>
+      <button class="btn btn-gold" id="btn-next-1" onclick="goTo(2)" disabled>Continuar → Elegir fecha</button>
+    </div>
+  </div>
+
+  <!-- PANEL 2 -->
+  <div class="panel" id="panel-2">
+    <div class="card">
+      <div class="card-label">Paso 2 — Fecha y hora</div>
+      <div class="date-scroll" id="date-scroll"></div>
+      <div id="slots-area"></div>
+      <div class="btn-row">
+        <button class="btn btn-outline" onclick="goTo(1)">← Volver</button>
+        <button class="btn btn-gold" id="btn-next-2" onclick="goTo(3)" disabled style="flex:1;">Continuar → Mis datos</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 3 -->
+  <div class="panel" id="panel-3">
+    <div class="card">
+      <div class="card-label">Paso 3 — Tus datos</div>
+      <div class="summary-box" id="form-summary"></div>
+      <div id="form-error" class="alert alert-error" style="display:none;"></div>
+      <div class="form-grid">
+        <div class="form-group"><label>Nombre completo *</label><input type="text" id="f-name" autocomplete="name" placeholder="Tu nombre completo"></div>
+        <div class="form-group"><label>Correo electrónico *</label><input type="email" id="f-email" autocomplete="email" placeholder="tucorreo@email.com"></div>
+        <div class="form-group"><label>Teléfono / WhatsApp *</label><input type="tel" id="f-phone" autocomplete="tel" placeholder="+57 300 000 0000"></div>
+        <div class="form-group">
+          <label>Tipo de consulta</label>
+          <select id="f-service">
+            <option>Psicoterapia Individual</option>
+            <option>Psicoterapia Adolescente</option>
+            <option>Terapia de Pareja</option>
+            <option>Terapia Familiar</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>¿Qué te trae? (opcional)</label>
+          <textarea id="f-notes" placeholder="Cuéntame brevemente qué te motiva a buscar apoyo..."></textarea>
+        </div>
+      </div>
+      <div class="alert alert-info">📱 Al confirmar se abrirá WhatsApp con los detalles pre-llenados. Envía el mensaje y te confirmaré la cita en menos de 24 horas.</div>
+      <div class="btn-row">
+        <button class="btn btn-outline" onclick="goTo(2)">← Volver</button>
+        <button id="btn-confirm-wa" class="btn btn-wa" onclick="submitBooking()" style="flex:1;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.555 4.122 1.528 5.855L0 24l6.335-1.508C8.078 23.445 10.012 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.846 0-3.593-.493-5.103-1.355l-.365-.218-3.785.901.938-3.676-.239-.377A9.944 9.944 0 012 12c0-5.514 4.486-10 10-10s10 4.486 10 10-4.486 10-10 10z"/></svg>
+          Confirmar por WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 4 -->
+  <div class="panel" id="panel-4">
+    <div class="success-wrap">
+      <div class="success-icon">🎉</div>
+      <h2 class="success-title">¡Mensaje <em>enviado!</em></h2>
+      <p class="success-sub">Tu solicitud fue enviada por WhatsApp. Nicolás te confirmará en menos de 24 horas.</p>
+      <div class="wa-note">
+        <span>💡</span>
+        <span>Si WhatsApp no abrió automáticamente, <a id="wa-fallback" href="#" style="color:var(--green);text-decoration:underline;">toca aquí para reenviar</a>.</span>
+      </div>
+      <div class="success-card" id="success-details"></div>
+      <br>
+      <a href="/"><button class="btn btn-gold" style="max-width:300px;">Volver al inicio</button></a>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+const S = { modality: null, price: null, date: null, dateLabel: null, dateStr: null, slot: null };
+
+const DAYS_ES   = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const DAYS_SH   = ['DOM','LUN','MAR','MIÉ','JUE','VIE','SÁB'];
+const MONTHS_ES = ['','ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const MONTHS_FULL = ['','enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+// Datos de disponibilidad reales provenientes de Google Calendar
+let gcalDays = null; // null = aún no cargado
+
+// ═══════════════════════════════════════════════════
+// STEP 1 — MODALITY
+// ═══════════════════════════════════════════════════
+function selectModality(mod, price) {
+  S.modality = mod;
+  S.price    = price;
+  document.querySelectorAll('.modality-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('mod-' + mod.toLowerCase()).classList.add('selected');
+  const pd = document.getElementById('price-display');
+  pd.innerHTML = 'Valor por sesión: <em>' + price + '</em> · Duración: 1 hora';
+  const btn = document.getElementById('btn-next-1');
+  btn.disabled = false;
+}
+
+// ═══════════════════════════════════════════════════
+// STEP 2 — CALENDAR (datos reales de Google Calendar)
+// ═══════════════════════════════════════════════════
+function loadAndBuildCalendar() {
+  const scroll   = document.getElementById('date-scroll');
+  const slotsArea = document.getElementById('slots-area');
+  scroll.innerHTML   = '<p style="color:var(--white-dim);font-size:0.85rem;padding:0.5rem 0;">Cargando disponibilidad...</p>';
+  slotsArea.innerHTML = '';
+
+  fetch('https://psicologonicolassalazarb.com/portal/calendar.php?action=slots')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (!data.success || !data.days) {
+        scroll.innerHTML = '<p style="color:var(--red);font-size:0.85rem;padding:0.5rem 0;">No se pudo cargar la disponibilidad. Intenta de nuevo.</p>';
+        return;
+      }
+      gcalDays = {};
+      data.days.forEach(function(day) { gcalDays[day.date] = day; });
+      buildCalendar();
+    })
+    .catch(function() {
+      scroll.innerHTML = '<p style="color:var(--red);font-size:0.85rem;padding:0.5rem 0;">Error de conexión. Intenta de nuevo.</p>';
+    });
+}
+
+function buildCalendar() {
+  var scroll = document.getElementById('date-scroll');
+  scroll.innerHTML = '';
+
+  var today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  for (var d = 0; d < 60; d++) {
+    var dt = new Date(today.getFullYear(), today.getMonth(), today.getDate() + d);
+    var dow = dt.getDay();
+    var y   = dt.getFullYear();
+    var mo  = String(dt.getMonth() + 1).padStart(2, '0');
+    var da  = String(dt.getDate()).padStart(2, '0');
+    var dateStr = y + '-' + mo + '-' + da;
+
+    // Domingo siempre cerrado; si GCal no devolvió ese día, también cerrado
+    var dayData = gcalDays ? gcalDays[dateStr] : null;
+    var closed  = (dow === 0) || (gcalDays !== null && !dayData);
+
+    var btn = document.createElement('button');
+    btn.className = 'date-btn' + (closed ? ' closed' : '');
+    btn.disabled  = closed;
+    btn.innerHTML = '<div class="date-dow">' + DAYS_SH[dow] + '</div>' +
+                    '<div class="date-num">' + dt.getDate() + '</div>' +
+                    '<div class="date-mon">' + MONTHS_ES[dt.getMonth()+1] + '</div>';
+    if (!closed) {
+      (function(capturedDt, capturedBtn, capturedDateStr) {
+        capturedBtn.addEventListener('click', function() { selectDate(capturedDt, capturedBtn, capturedDateStr); });
+      })(dt, btn, dateStr);
+    }
+    scroll.appendChild(btn);
+  }
+
+  // Auto-select primer día disponible
+  var first = scroll.querySelector('.date-btn:not(.closed)');
+  if (first) first.click();
+}
+
+function pad(n) { return String(n).padStart(2,'0'); }
+
+function displayTime(timeStr) {
+  // Convierte "09:00" o "14:00" a "9:00 AM" / "2:00 PM"
+  const [hh, mm] = timeStr.split(':').map(Number);
+  const ampm = hh >= 12 ? 'PM' : 'AM';
+  const h12  = hh > 12 ? hh - 12 : (hh === 0 ? 12 : hh);
+  return h12 + ':' + String(mm).padStart(2,'0') + ' ' + ampm;
+}
+
+function selectDate(dt, btn, dateStr) {
+  document.querySelectorAll('.date-btn').forEach(function(b) { b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  S.date    = dt;
+  S.dateStr = dateStr;
+  S.dateLabel = DAYS_ES[dt.getDay()] + ', ' + dt.getDate() + ' de ' + MONTHS_FULL[dt.getMonth()+1] + ' de ' + dt.getFullYear();
+  S.slot = null;
+
+  document.getElementById('btn-next-2').disabled = true;
+
+  var slotsArea = document.getElementById('slots-area');
+  slotsArea.innerHTML = '';
+
+  var label = document.createElement('div');
+  label.className = 'slots-label';
+  label.textContent = 'Horarios disponibles — ' + S.dateLabel;
+  slotsArea.appendChild(label);
+
+  var grid = document.createElement('div');
+  grid.className = 'slots-grid';
+
+  var dayData = gcalDays ? gcalDays[dateStr] : null;
+  var hasAny  = false;
+
+  if (dayData && dayData.slots && dayData.slots.length > 0) {
+    dayData.slots.forEach(function(slot) {
+      var slotBtn = document.createElement('button');
+      slotBtn.className   = 'slot-btn';
+      slotBtn.textContent = displayTime(slot.start);
+      // Closure captura el slot — sin HTML attributes, sin problema de comillas
+      (function(s) {
+        slotBtn.addEventListener('click', function() {
+          selectSlot(slotBtn, s.start, s.end, s.startISO, s.endISO);
+        });
+      })(slot);
+      grid.appendChild(slotBtn);
+      hasAny = true;
+    });
+  }
+
+  if (!hasAny) {
+    var noSlots = document.createElement('p');
+    noSlots.style.cssText = 'color:var(--white-dim);font-size:0.85rem;grid-column:1/-1;padding:0.5rem 0;';
+    noSlots.textContent = 'No hay horarios disponibles para este día.';
+    grid.appendChild(noSlots);
+  }
+
+  slotsArea.appendChild(grid);
+}
+
+function selectSlot(el, start, end, startISO, endISO) {
+  document.querySelectorAll('.slot-btn').forEach(function(b) { b.classList.remove('selected'); });
+  el.classList.add('selected');
+  S.slot = {
+    label:        start,
+    endLabel:     end,
+    startISO:     startISO,
+    endISO:       endISO,
+    displayStart: displayTime(start),
+    displayEnd:   displayTime(end),
+  };
+  document.getElementById('btn-next-2').disabled = false;
+}
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+function goTo(n) {
+  document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('panel-' + n).classList.add('active');
+  document.querySelectorAll('.step').forEach(function(s, i) {
+    s.classList.remove('active','done');
+    if (i + 1 < n) s.classList.add('done');
+    if (i + 1 === n) s.classList.add('active');
+  });
+  if (n === 2) {
+    loadAndBuildCalendar();
+  }
+  if (n === 3) {
+    document.getElementById('form-summary').innerHTML =
+      '<div class="summary-row"><strong>Modalidad</strong><span>' + (S.modality === 'Online' ? '💻 Online' : (S.modality === 'Exterior' ? '🌎 Desde el exterior' : '🏢 Presencial')) + '</span></div>' +
+      '<div class="summary-row"><strong>Valor</strong><span>' + S.price + '</span></div>' +
+      '<div class="summary-row"><strong>Fecha</strong><span>' + S.dateLabel + '</span></div>' +
+      '<div class="summary-row"><strong>Hora</strong><span>' + S.slot.displayStart + ' – ' + S.slot.displayEnd + '</span></div>';
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ═══════════════════════════════════════════════════
+// SUBMIT — Abre WhatsApp con los detalles de la cita
+// ═══════════════════════════════════════════════════
+function submitBooking() {
+  var name    = document.getElementById('f-name').value.trim();
+  var email   = document.getElementById('f-email').value.trim();
+  var phone   = document.getElementById('f-phone').value.trim();
+  var service = document.getElementById('f-service').value;
+  var notes   = document.getElementById('f-notes').value.trim();
+  var errEl   = document.getElementById('form-error');
+
+  if (!name || !email || !phone) {
+    errEl.textContent = 'Por favor completa nombre, correo y teléfono.';
+    errEl.style.display = 'block';
+    errEl.scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errEl.textContent = 'El correo no parece válido.';
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  var modalityDetail = S.modality === 'Online' ? 'Online (videollamada)' : (S.modality === 'Exterior' ? 'Desde el exterior (videollamada)' : 'Presencial — Cl. 52 #20-15, Bogotá');
+
+  var msg = 'Hola Nicolás, quisiera agendar una cita:\n\n';
+  msg += '👤 *Nombre:* '     + name    + '\n';
+  msg += '📧 *Correo:* '     + email   + '\n';
+  msg += '📱 *Teléfono:* '   + phone   + '\n';
+  msg += '🧠 *Servicio:* '   + service + '\n';
+  msg += '💻 *Modalidad:* '  + modalityDetail + '\n';
+  msg += '💰 *Valor sesión:* ' + S.price + '\n';
+  msg += '📅 *Fecha:* '      + S.dateLabel + '\n';
+  msg += '⏰ *Hora:* '       + S.slot.displayStart + ' – ' + S.slot.displayEnd + '\n';
+  if (notes) msg += '\n📝 *Notas:* ' + notes + '\n';
+  msg += '\n_Solicitud desde psicologonicolassalazarb.com_';
+
+  var waUrl = 'https://wa.me/573115725459?text=' + encodeURIComponent(msg);
+
+  document.getElementById('success-details').innerHTML =
+    '<div class="summary-row"><strong>Nombre</strong><span>'    + name    + '</span></div>' +
+    '<div class="summary-row"><strong>Correo</strong><span>'    + email   + '</span></div>' +
+    '<div class="summary-row"><strong>Modalidad</strong><span>' + (S.modality === 'Online' ? '💻 Online' : (S.modality === 'Exterior' ? '🌎 Desde el exterior' : '🏢 Presencial')) + '</span></div>' +
+    '<div class="summary-row"><strong>Valor</strong><span>'     + S.price + '</span></div>' +
+    '<div class="summary-row"><strong>Fecha</strong><span>'     + S.dateLabel + '</span></div>' +
+    '<div class="summary-row"><strong>Hora</strong><span>'      + S.slot.displayStart + ' – ' + S.slot.displayEnd + '</span></div>' +
+    '<div class="summary-row"><strong>Servicio</strong><span>'  + service + '</span></div>';
+
+  document.getElementById('wa-fallback').href = waUrl;
+  goTo(4);
+  window.open(waUrl, '_blank');
+}
+// Disponibilidad cargada en tiempo real desde Google Calendar via /portal/calendar.php?action=slots
+</script>
+</body>
+</html>
