@@ -53,7 +53,7 @@ const SITE_CONFIG = {
 
   // ── Cifras de autoridad — solo hechos reales, nunca inventar ──
   stats: {
-    patients: "+40",
+    patients: "+300",
     yearsExperience: "+5",
   },
 
