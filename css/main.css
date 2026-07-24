@@ -112,29 +112,46 @@ em { font-style: italic; color: var(--gold-deep); }
 
 /* ── BUTTONS ── */
 .btn {
+  position: relative; overflow: hidden;
   display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
   padding: 0.95rem 2.1rem; font-family: var(--font-body); font-size: 0.76rem; font-weight: 500;
-  letter-spacing: 0.16em; text-transform: uppercase; border: none; border-radius: var(--radius);
+  letter-spacing: 0.16em; text-transform: uppercase; border: none; border-radius: 5px;
   cursor: pointer; transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
 }
-.btn-gold { background: var(--gold); color: var(--ink); }
-.btn-gold:hover { background: var(--gold-bright); transform: translateY(-3px); box-shadow: var(--shadow-gold-lg); }
+.btn:active { transform: translateY(0) scale(0.97); }
+
+/* El CTA principal del sitio — debe sentirse como el botón más importante */
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold-bright), var(--gold) 65%);
+  color: #201908; box-shadow: var(--shadow-gold);
+}
+.btn-gold::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.45) 50%, transparent 60%);
+  transform: translateX(-120%);
+  transition: transform 0.7s var(--ease-out);
+}
+.btn-gold:hover::before { transform: translateX(120%); }
+.btn-gold:hover { background: linear-gradient(135deg, var(--gold-bright), var(--gold-bright) 65%); transform: translateY(-3px); box-shadow: var(--shadow-gold-lg); }
 
 .btn-outline { background: transparent; border: 1px solid var(--border-strong); color: var(--ink-dim); }
-.btn-outline:hover { border-color: var(--gold); color: var(--gold-deep); background: var(--gold-wash); }
+.btn-outline:hover { border-color: var(--gold); color: var(--gold-deep); background: var(--gold-wash); transform: translateY(-2px); }
 
-.btn-wa { background: var(--wa-green); color: #04150a; }
-.btn-wa:hover { background: #2fe377; transform: translateY(-2px); }
+.btn-wa { background: var(--wa-green); color: #04150a; box-shadow: 0 8px 22px rgba(37, 211, 102, 0.22); }
+.btn-wa:hover { background: #2fe377; transform: translateY(-3px); box-shadow: 0 14px 34px rgba(37, 211, 102, 0.3); }
 
 .btn-text { background: none; color: var(--gold-deep); letter-spacing: 0.1em; text-transform: none; font-size: 0.85rem; padding: 0; gap: 0.4rem; }
 .btn-text:hover { color: var(--gold); gap: 0.6rem; }
+@media (prefers-reduced-motion: reduce) { .btn-gold::before { display: none; } }
 
 /* ── CARDS ── */
 .card {
-  background: var(--paper-card);
+  position: relative;
+  background: linear-gradient(180deg, var(--paper-card), var(--paper) 130%);
   border: 1px solid var(--border-soft);
-  border-radius: var(--radius);
+  border-radius: 8px;
   padding: 2rem;
+  box-shadow: var(--shadow-xs);
   transition: border-color var(--dur-base) var(--ease), transform var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease);
 }
 .card:hover { border-color: var(--gold); transform: translateY(-6px); box-shadow: var(--shadow-lg); }
@@ -151,6 +168,14 @@ em { font-style: italic; color: var(--gold-deep); }
 .card:hover .lamp, .lamp.lit { opacity: 1; filter: drop-shadow(0 0 4px rgba(184, 147, 90, 0.35)); }
 .card:hover .lamp .bulb, .lamp.lit .bulb { fill: var(--gold); }
 .card:hover .lamp path, .lamp.lit path { stroke: var(--gold); }
+
+/* Badge circular — solo en el ícono de las tarjetas de "problemas" */
+.problem-card .lamp {
+  width: 24px; height: 24px; padding: 0.5rem; box-sizing: content-box;
+  background: var(--gold-wash); border-radius: 50%; opacity: 0.85;
+  transition: opacity var(--dur-base) var(--ease), filter var(--dur-base) var(--ease), background var(--dur-base) var(--ease);
+}
+.problem-card:hover .lamp { background: var(--gold-wash-strong); }
 
 .lamp-divider { display: flex; align-items: center; gap: 1rem; margin: 3rem 0; }
 .lamp-divider::before, .lamp-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
@@ -438,7 +463,10 @@ html {
 .problem-tag {
   font-size: 0.65rem; letter-spacing: 0.05em; text-transform: uppercase;
   color: var(--gold-deep); background: var(--gold-wash); padding: 0.28rem 0.65rem; border-radius: 20px;
+  border: 1px solid var(--gold-wash-strong);
+  transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
 }
+.problem-card:hover .problem-tag { background: var(--gold-wash-strong); border-color: var(--gold); }
 .problem-card p { color: var(--ink-dim); font-size: 1.02rem; line-height: 1.75; margin-bottom: 1.1rem; }
 .problem-mode { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
 
@@ -569,19 +597,31 @@ html {
 }
 
 .testi-card {
-  flex: 0 0 300px;
-  background: var(--paper-card); border: 1px solid var(--border-soft);
+  position: relative;
+  flex: 0 0 310px;
+  background: linear-gradient(180deg, var(--paper-card), var(--paper) 140%);
+  border: 1px solid var(--border-soft);
   border-top: 2px solid var(--gold);
-  border-radius: var(--radius); padding: 1.5rem;
+  border-radius: 8px; padding: 1.7rem 1.6rem 1.6rem;
   display: flex; flex-direction: column;
   box-shadow: var(--shadow-sm);
+  transition: transform var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease);
+}
+.testi-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--gold); }
+.testi-card::before {
+  content: '"'; position: absolute; top: 0.6rem; right: 1.1rem;
+  font-family: var(--font-display); font-size: 3.4rem; line-height: 1; font-weight: 600;
+  color: var(--gold-wash-strong); pointer-events: none;
 }
 .testi-head { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.9rem; }
-.testi-avatar { width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; overflow: hidden; }
+.testi-avatar {
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; overflow: hidden;
+  border: 1.5px solid var(--gold-wash-strong);
+}
 .testi-avatar svg { width: 100%; height: 100%; }
 .testi-author { font-size: 0.94rem; color: var(--ink); font-weight: 500; }
-.testi-meta { font-size: 0.82rem; color: var(--gold-deep); }
-.testi-text { font-size: 0.96rem; color: var(--ink-dim); line-height: 1.7; }
+.testi-meta { font-size: 0.82rem; color: var(--gold-deep); letter-spacing: 0.06em; }
+.testi-text { position: relative; font-size: 0.96rem; color: var(--ink-dim); line-height: 1.7; }
 
 /* ═══════════════════════════════════════════════════════════
    FAQ  (#faq)
