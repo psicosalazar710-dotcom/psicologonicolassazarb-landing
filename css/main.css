@@ -604,6 +604,29 @@ html {
 }
 @media (prefers-reduced-motion: reduce) {
   .testi-track { animation: none; overflow-x: auto; scroll-snap-type: x proximity; }
+  .testi-card { scroll-snap-align: start; }
+}
+
+/* Táctil (celular/tablet): no hay :hover real para pausar el auto-scroll,
+   así que en vez de forzar el marquee, se entrega control total al dedo
+   (swipe manual con snap), igual que se hace para reduced-motion. */
+@media (hover: none), (pointer: coarse) {
+  .testi-track {
+    animation: none; overflow-x: auto; scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .testi-track::-webkit-scrollbar { display: none; }
+  .testi-card { scroll-snap-align: start; }
+}
+
+/* El segundo set (17-32) es una copia exacta del primero, solo para que el
+   marquee de escritorio pueda hacer loop infinito sin salto visible.
+   display:contents lo hace invisible al layout flex (los 16 hijos siguen
+   siendo ítems directos del track); en táctil se oculta por completo para
+   que el swipe manual no repita los mismos 16 testimonios dos veces. */
+.testi-duplicate { display: contents; }
+@media (hover: none), (pointer: coarse) {
+  .testi-duplicate { display: none; }
 }
 
 .testi-card {
@@ -717,6 +740,11 @@ html {
 
 @media (max-width: 780px) {
   .gallery-videos { grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+}
+@media (max-width: 480px) {
+  .gallery-videos { gap: 0.4rem; }
+  .play-btn { width: 42px; height: 42px; }
+  .play-btn svg { width: 15px; height: 15px; }
 }
 
 /* ═══════════════════════════════════════════════════════════
