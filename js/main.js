@@ -124,3 +124,25 @@ if (counterEls.length && !reduceMotion) {
   }, { threshold: 0.6 });
   counterEls.forEach(el => counterObserver.observe(el));
 }
+
+/* ── Tilt 3D sutil con el cursor — solo desktop con mouse real, nunca en táctil ──
+   Sigue la posición del puntero dentro del elemento y aplica una rotación
+   discreta (máx. ~2.5°) con perspectiva. Al salir, vuelve a su posición
+   neutra mediante la transición ya definida en CSS para [data-tilt]. */
+const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+if (hasFinePointer && !reduceMotion) {
+  document.querySelectorAll('[data-tilt]').forEach(el => {
+    const maxTilt = parseFloat(el.dataset.tilt) || 2.5;
+    const keepLift = el.dataset.tiltLift !== 'false';
+    const lift = keepLift ? ' translateY(-6px)' : '';
+    el.addEventListener('pointermove', (e) => {
+      const rect = el.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width - 0.5;
+      const py = (e.clientY - rect.top) / rect.height - 0.5;
+      const rotY = (px * maxTilt * 2).toFixed(2);
+      const rotX = (-py * maxTilt * 2).toFixed(2);
+      el.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg)${lift}`;
+    });
+    el.addEventListener('pointerleave', () => { el.style.transform = ''; });
+  });
+}

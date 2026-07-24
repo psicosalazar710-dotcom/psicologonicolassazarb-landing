@@ -169,7 +169,17 @@ em { font-style: italic; color: var(--gold-deep); }
 .card:hover .lamp .bulb, .lamp.lit .bulb { fill: var(--gold); }
 .card:hover .lamp path, .lamp.lit path { stroke: var(--gold); }
 
-/* Badge circular — solo en el ícono de las tarjetas de "problemas" */
+/* ── TILT 3D (cursor, solo desktop) ──
+   El JS solo escribe transform inline mientras el puntero está encima;
+   esta transición gobierna el regreso suave a la posición neutra al salir. */
+[data-tilt] { transition: transform 0.35s var(--ease-out); }
+
+/* Íconos con leve vida propia al hover, además del cambio de color/opacidad ya existente */
+.lamp { transition: opacity var(--dur-base) var(--ease), filter var(--dur-base) var(--ease), transform var(--dur-base) var(--ease); }
+.problem-card:hover .lamp { transform: rotate(-8deg); }
+.contact-icon svg { transition: transform var(--dur-base) var(--ease); }
+.contact-card:hover .contact-icon svg { transform: rotate(-8deg) scale(1.06); }
+
 .problem-card .lamp {
   width: 24px; height: 24px; padding: 0.5rem; box-sizing: content-box;
   background: var(--gold-wash); border-radius: 50%; opacity: 0.85;
