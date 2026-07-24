@@ -125,10 +125,6 @@ if (counterEls.length && !reduceMotion) {
   counterEls.forEach(el => counterObserver.observe(el));
 }
 
-/* ── Tilt 3D sutil con el cursor — solo desktop con mouse real, nunca en táctil ──
-   Sigue la posición del puntero dentro del elemento y aplica una rotación
-   discreta (máx. ~2.5°) con perspectiva. Al salir, vuelve a su posición
-   neutra mediante la transición ya definida en CSS para [data-tilt]. */
 /* ── Navegación táctil de testimonios (flechas + contador) ──
    En desktop el :hover pausa/reanuda el marquee; en móvil no existe :hover,
    así que se entregan controles explícitos. Solo cuentan las 16 tarjetas
@@ -169,6 +165,12 @@ if (counterEls.length && !reduceMotion) {
     scrollTimer = setTimeout(updateCounter, 100);
   }, { passive: true });
 })();
+
+/* ── Tilt 3D sutil con el cursor — solo desktop con mouse real, nunca en táctil ──
+   Sigue la posición del puntero dentro del elemento y aplica una rotación
+   discreta (máx. ~2.5°) con perspectiva. Al salir, vuelve a su posición
+   neutra mediante la transición ya definida en CSS para [data-tilt]. */
+const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
 if (hasFinePointer && !reduceMotion) {
   document.querySelectorAll('[data-tilt]').forEach(el => {
     const maxTilt = parseFloat(el.dataset.tilt) || 2.5;
