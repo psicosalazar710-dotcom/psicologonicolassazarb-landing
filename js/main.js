@@ -129,7 +129,46 @@ if (counterEls.length && !reduceMotion) {
    Sigue la posición del puntero dentro del elemento y aplica una rotación
    discreta (máx. ~2.5°) con perspectiva. Al salir, vuelve a su posición
    neutra mediante la transición ya definida en CSS para [data-tilt]. */
-const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+/* ── Navegación táctil de testimonios (flechas + contador) ──
+   En desktop el :hover pausa/reanuda el marquee; en móvil no existe :hover,
+   así que se entregan controles explícitos. Solo cuentan las 16 tarjetas
+   reales (las duplicadas del marquee quedan ocultas en móvil). */
+(() => {
+  const track = document.getElementById('testiTrack');
+  const prevBtn = document.getElementById('testiPrev');
+  const nextBtn = document.getElementById('testiNext');
+  const counter = document.getElementById('testiCounter');
+  if (!track || !prevBtn || !nextBtn) return;
+
+  const cards = Array.from(track.querySelectorAll(':scope > .testi-card'));
+  const total = cards.length;
+  if (!total) return;
+
+  const cardStep = () => {
+    const gap = parseFloat(getComputedStyle(track).gap) || 0;
+    return cards[0].getBoundingClientRect().width + gap;
+  };
+
+  const updateCounter = () => {
+    if (!counter) return;
+    const trackLeft = track.getBoundingClientRect().left;
+    let closest = 0, minDist = Infinity;
+    cards.forEach((card, i) => {
+      const dist = Math.abs(card.getBoundingClientRect().left - trackLeft);
+      if (dist < minDist) { minDist = dist; closest = i; }
+    });
+    counter.textContent = `${closest + 1} / ${total}`;
+  };
+
+  prevBtn.addEventListener('click', () => track.scrollBy({ left: -cardStep(), behavior: 'smooth' }));
+  nextBtn.addEventListener('click', () => track.scrollBy({ left: cardStep(), behavior: 'smooth' }));
+
+  let scrollTimer;
+  track.addEventListener('scroll', () => {
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(updateCounter, 100);
+  }, { passive: true });
+})();
 if (hasFinePointer && !reduceMotion) {
   document.querySelectorAll('[data-tilt]').forEach(el => {
     const maxTilt = parseFloat(el.dataset.tilt) || 2.5;

@@ -629,6 +629,24 @@ html {
   .testi-duplicate { display: none; }
 }
 
+/* Controles táctiles — reemplazan al :hover que no existe en móvil */
+.testi-nav { display: none; }
+@media (hover: none), (pointer: coarse) {
+  .testi-nav {
+    display: flex; align-items: center; justify-content: center; gap: 1.1rem;
+    margin-top: 1.4rem;
+  }
+  .testi-nav-btn {
+    width: 42px; height: 42px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--paper-card); border: 1px solid var(--border-strong);
+    color: var(--ink-dim); cursor: pointer;
+    transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+  }
+  .testi-nav-btn:active { transform: scale(0.92); background: var(--gold-wash); border-color: var(--gold); color: var(--gold-deep); }
+  .testi-counter { font-size: 0.78rem; letter-spacing: 0.06em; color: var(--ink-faint); min-width: 3.6em; text-align: center; }
+}
+
 .testi-card {
   position: relative;
   flex: 0 0 310px;
