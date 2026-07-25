@@ -603,19 +603,24 @@ html {
   to { transform: translateX(-50%); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .testi-track { animation: none; overflow-x: auto; scroll-snap-type: x proximity; }
+  .testi-track { animation: none; }
+  .testi-track-wrap { overflow-x: auto; scroll-snap-type: x proximity; }
   .testi-card { scroll-snap-align: start; }
 }
 
 /* Táctil (celular/tablet): no hay :hover real para pausar el auto-scroll,
    así que en vez de forzar el marquee, se entrega control total al dedo
-   (swipe manual con snap), igual que se hace para reduced-motion. */
+   (swipe manual con snap), igual que se hace para reduced-motion.
+   IMPORTANTE: el contenedor que realmente puede tener overflow/scroll es
+   .testi-track-wrap, no .testi-track — este último mide "width: max-content"
+   (se ajusta exacto a su contenido), así que jamás desborda de sí mismo. */
 @media (hover: none), (pointer: coarse) {
-  .testi-track {
-    animation: none; overflow-x: auto; scroll-snap-type: x proximity;
+  .testi-track-wrap {
+    overflow-x: auto; scroll-snap-type: x proximity;
     -webkit-overflow-scrolling: touch; scrollbar-width: none;
   }
-  .testi-track::-webkit-scrollbar { display: none; }
+  .testi-track-wrap::-webkit-scrollbar { display: none; }
+  .testi-track { animation: none; }
   .testi-card { scroll-snap-align: start; }
 }
 

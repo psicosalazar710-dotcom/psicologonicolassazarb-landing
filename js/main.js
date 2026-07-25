@@ -130,11 +130,12 @@ if (counterEls.length && !reduceMotion) {
    así que se entregan controles explícitos. Solo cuentan las 16 tarjetas
    reales (las duplicadas del marquee quedan ocultas en móvil). */
 (() => {
+  const wrap = document.getElementById('testiWrap');
   const track = document.getElementById('testiTrack');
   const prevBtn = document.getElementById('testiPrev');
   const nextBtn = document.getElementById('testiNext');
   const counter = document.getElementById('testiCounter');
-  if (!track || !prevBtn || !nextBtn) return;
+  if (!wrap || !track || !prevBtn || !nextBtn) return;
 
   const cards = Array.from(track.querySelectorAll(':scope > .testi-card'));
   const total = cards.length;
@@ -147,20 +148,20 @@ if (counterEls.length && !reduceMotion) {
 
   const updateCounter = () => {
     if (!counter) return;
-    const trackLeft = track.getBoundingClientRect().left;
+    const wrapLeft = wrap.getBoundingClientRect().left;
     let closest = 0, minDist = Infinity;
     cards.forEach((card, i) => {
-      const dist = Math.abs(card.getBoundingClientRect().left - trackLeft);
+      const dist = Math.abs(card.getBoundingClientRect().left - wrapLeft);
       if (dist < minDist) { minDist = dist; closest = i; }
     });
     counter.textContent = `${closest + 1} / ${total}`;
   };
 
-  prevBtn.addEventListener('click', () => track.scrollBy({ left: -cardStep(), behavior: 'smooth' }));
-  nextBtn.addEventListener('click', () => track.scrollBy({ left: cardStep(), behavior: 'smooth' }));
+  prevBtn.addEventListener('click', () => wrap.scrollBy({ left: -cardStep(), behavior: 'smooth' }));
+  nextBtn.addEventListener('click', () => wrap.scrollBy({ left: cardStep(), behavior: 'smooth' }));
 
   let scrollTimer;
-  track.addEventListener('scroll', () => {
+  wrap.addEventListener('scroll', () => {
     clearTimeout(scrollTimer);
     scrollTimer = setTimeout(updateCounter, 100);
   }, { passive: true });
