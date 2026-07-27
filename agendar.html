@@ -384,7 +384,7 @@ function loadAndBuildCalendar() {
   scroll.innerHTML   = '<p style="color:var(--white-dim);font-size:0.85rem;padding:0.5rem 0;">Cargando disponibilidad...</p>';
   slotsArea.innerHTML = '';
 
-  fetch('https://psicologonicolassalazarb.com/portal/calendar.php?action=slots')
+  fetch('https://psicologonicolassalazarb.com/api/calendar?action=slots')
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (!data.success || !data.days) {
@@ -589,7 +589,7 @@ function submitBooking() {
   goTo(4);
   window.open(waUrl, '_blank');
 }
-// Disponibilidad cargada en tiempo real desde Google Calendar via /portal/calendar.php?action=slots
+// Disponibilidad cargada en tiempo real desde Google Calendar via /api/calendar?action=slots (Cloudflare Worker)
 </script>
 </body>
 </html>
