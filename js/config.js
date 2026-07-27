@@ -37,7 +37,7 @@ const SITE_CONFIG = {
   // ── Mensajes pre-armados de WhatsApp (reutilizados en Hero, CTA final y botón flotante) ──
   whatsappMessage: "Hola Nicolás, quisiera agendar una cita.",
 
-  // ── Horario de atención (debe coincidir con calendar.php y el Schema.org del <head>) ──
+  // ── Horario de atención (debe coincidir con el Worker de Cloudflare y el Schema.org del <head>) ──
   schedule: [
     { days: "Lunes a viernes", hours: "9:00 a.m. – 9:00 p.m." },
     { days: "Sábados", hours: "9:00 a.m. – 12:00 p.m." }
@@ -60,8 +60,8 @@ const SITE_CONFIG = {
   // ── Enlace de agendamiento ──
   bookingUrl: "/agendar.html",
 
-  // ── Google Calendar API (consumido por agendar.html) ──
-  calendarApiUrl: "https://psicologonicolassalazarb.com/portal/calendar.php?action=slots",
+  // ── Cloudflare Worker: disponibilidad de Google Calendar (consumido por agendar.html) ──
+  calendarApiUrl: "https://psicologonicolassalazarb.com/api/calendar?action=slots",
 };
 
 /* Helper: arma el link de WhatsApp con número + mensaje codificado */
