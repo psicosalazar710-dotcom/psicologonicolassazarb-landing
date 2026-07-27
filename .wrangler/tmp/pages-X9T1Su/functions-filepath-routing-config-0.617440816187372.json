@@ -1,0 +1,13 @@
+{
+  "routes": [
+    {
+      "routePath": "/api/calendar",
+      "mountPath": "/api",
+      "method": "",
+      "module": [
+        "api/calendar.js:onRequest"
+      ]
+    }
+  ],
+  "baseURL": "/"
+}

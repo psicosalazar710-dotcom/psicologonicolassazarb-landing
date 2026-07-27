@@ -395,7 +395,8 @@ function loadAndBuildCalendar() {
       data.days.forEach(function(day) { gcalDays[day.date] = day; });
       buildCalendar();
     })
-    .catch(function() {
+    .catch(function(err) {
+      console.error('Error consultando /api/calendar?action=slots:', err);
       scroll.innerHTML = '<p style="color:var(--red);font-size:0.85rem;padding:0.5rem 0;">Error de conexión. Intenta de nuevo.</p>';
     });
 }
