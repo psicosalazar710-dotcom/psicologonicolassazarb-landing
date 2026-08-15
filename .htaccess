@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteRule ^api/calendar$ portal/calendar.php [QSA,L]
+
+<FilesMatch "\.json$">
+  Require all denied
+</FilesMatch>
