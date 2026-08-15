@@ -37,6 +37,9 @@ const SITE_CONFIG = {
   // ── Mensajes pre-armados de WhatsApp (reutilizados en Hero, CTA final y botón flotante) ──
   whatsappMessage: "Hola Nicolás, quisiera agendar una cita.",
 
+  // ── Mensaje del botón "Personalizado" (servicios para empresas/equipos/grupos) ──
+  whatsappMessageCustom: "Hola Nicolás, me gustaría consultar por un servicio personalizado para mi empresa/equipo/grupo.",
+
   // ── Horario de atención (debe coincidir con el Worker de Cloudflare y el Schema.org del <head>) ──
   schedule: [
     { days: "Lunes a viernes", hours: "9:00 a.m. – 9:00 p.m." },
@@ -53,7 +56,7 @@ const SITE_CONFIG = {
 
   // ── Cifras de autoridad — solo hechos reales, nunca inventar ──
   stats: {
-    patients: "+300",
+    patients: "+500",
     yearsExperience: "+5",
   },
 

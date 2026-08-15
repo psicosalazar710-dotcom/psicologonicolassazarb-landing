@@ -139,6 +139,8 @@ em { font-style: italic; color: var(--gold-deep); }
 
 .btn-wa { background: var(--wa-green); color: #04150a; box-shadow: 0 8px 22px rgba(37, 211, 102, 0.22); }
 .btn-wa:hover { background: #2fe377; transform: translateY(-3px); box-shadow: 0 14px 34px rgba(37, 211, 102, 0.3); }
+.btn-wa svg { transition: transform var(--dur-fast) var(--ease); }
+.btn-wa:hover svg { transform: rotate(-8deg) scale(1.1); }
 
 .btn-text { background: none; color: var(--gold-deep); letter-spacing: 0.1em; text-transform: none; font-size: 0.85rem; padding: 0; gap: 0.4rem; }
 .btn-text:hover { color: var(--gold); gap: 0.6rem; }
@@ -237,6 +239,7 @@ em { font-style: italic; color: var(--gold-deep); }
 @media (prefers-reduced-motion: reduce) {
   .reveal, .reveal-scale, .reveal-left, .reveal-right, .reveal-blur { opacity: 1; transform: none; filter: none; transition: none; }
   .img-frame:hover img { transform: none; }
+  .authority-stat .num::after { transition: none; width: 30px; }
 }
 /* ═══════════════════════════════════════════════════════════
    NAV
@@ -260,7 +263,12 @@ nav.scrolled {
   color: var(--ink); letter-spacing: 0.04em; white-space: nowrap;
   display: flex; align-items: center; gap: 0.6rem;
 }
-.nav-logo .lamp { opacity: 0.85; width: 17px; height: 17px; }
+.nav-logo .lamp { opacity: 0.85; width: 17px; height: 17px; animation: nav-lamp-idle 4.5s ease-in-out infinite; }
+@keyframes nav-lamp-idle {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(184, 147, 90, 0.35)); }
+  50% { filter: drop-shadow(0 0 7px rgba(184, 147, 90, 0.55)); }
+}
+@media (prefers-reduced-motion: reduce) { .nav-logo .lamp { animation: none; } }
 .nav-links { display: flex; gap: 2.1rem; list-style: none; align-items: center; }
 .nav-links a {
   color: var(--ink-dim); font-size: 0.8rem;
@@ -368,6 +376,15 @@ nav.scrolled {
   border: 1px solid var(--border-strong); border-radius: var(--radius);
   z-index: -1;
 }
+/* Wrapper dedicado al parallax (JS) — separado del .img-frame para no chocar
+   con el tilt 3D (ambos escriben transform inline en elementos distintos). */
+.hero-portrait-parallax { position: relative; }
+.hero-portrait-parallax::before {
+  content: '';
+  position: absolute; top: -1rem; right: -1rem; width: 70px; height: 70px;
+  border-top: 1px solid var(--gold); border-right: 1px solid var(--gold);
+  z-index: -1; pointer-events: none;
+}
 .hero-portrait .img-frame {
   aspect-ratio: 4/5; box-shadow: var(--shadow-xl);
   border: 1px solid var(--border-soft); border-radius: 6px;
@@ -378,6 +395,7 @@ nav.scrolled {
   50% { transform: translate(-2%, 2%); }
 }
 @media (prefers-reduced-motion: reduce) { .hero-portrait::before { animation: none; } }
+@media (max-width: 980px) { .hero-portrait-parallax::before { display: none; } }
 
 /* ── ENTRADA CINEMÁTICA DEL HERO (una sola vez, al cargar) ── */
 .hero-left > *, .hero-portrait {
@@ -392,8 +410,19 @@ nav.scrolled {
 .hero-left .hero-trust   { animation-delay: 0.62s; }
 .hero-portrait            { animation-delay: 0.30s; }
 @keyframes hero-in { to { opacity: 1; transform: none; } }
+
+/* Línea dorada del eyebrow del hero: se dibuja de 0 a su ancho final,
+   apenas después de que el eyebrow empieza a aparecer con hero-in. */
+.hero-left .eyebrow::before {
+  width: 0;
+  animation: eyebrow-line-draw 0.6s var(--ease-out) forwards;
+  animation-delay: 0.3s;
+}
+@keyframes eyebrow-line-draw { to { width: 26px; } }
+
 @media (prefers-reduced-motion: reduce) {
   .hero-left > *, .hero-portrait { opacity: 1; transform: none; animation: none; }
+  .hero-left .eyebrow::before { animation: none; width: 26px; }
 }
 
 .scroll-cue {
@@ -465,8 +494,16 @@ html {
 .problems-grid {
   display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.4rem;
 }
-.problem-card { position: relative; }
+.problem-card { position: relative; overflow: hidden; }
 .problem-card .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.1rem; }
+
+/* Numeral editorial — watermark muy sutil, detrás del contenido (z-index negativo) */
+.problem-num {
+  position: absolute; top: 0.3rem; right: 1.1rem; z-index: -1;
+  font-family: var(--font-display); font-size: 4.6rem; line-height: 1;
+  color: var(--gold-wash-strong); pointer-events: none; user-select: none;
+}
+@media (max-width: 480px) { .problem-num { font-size: 3.4rem; } }
 .problem-card .lamp { width: 24px; height: 24px; }
 .problem-card h3 { font-weight: 400; margin-bottom: 0.7rem; }
 .problem-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.9rem; }
@@ -479,6 +516,11 @@ html {
 .problem-card:hover .problem-tag { background: var(--gold-wash-strong); border-color: var(--gold); }
 .problem-card p { color: var(--ink-dim); font-size: 1.02rem; line-height: 1.75; margin-bottom: 1.1rem; }
 .problem-mode { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
+
+/* Servicios personalizados (empresas/equipos/grupos) — misma tarjeta, a lo ancho del grid */
+.problems-grid .services-custom { grid-column: 1 / -1; }
+.problems-grid .services-custom .btn-wa { margin-top: 0.3rem; }
+.problems-grid .problem-card:nth-child(5) { transition-delay: 0.3s; }
 
 @media (max-width: 780px) {
   .problems-grid { grid-template-columns: 1fr; }
@@ -509,13 +551,25 @@ html {
 /* ═══════════════════════════════════════════════════════════
    POR QUÉ ELEGIRME  (#enfoque)
    ═══════════════════════════════════════════════════════════ */
-#enfoque { background: var(--paper-alt); border-top: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft); }
+#enfoque {
+  position: relative;
+  background: var(--anchor);
+  border-top: 1px solid var(--anchor-border); border-bottom: 1px solid var(--anchor-border);
+}
+#enfoque::before {
+  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 60%; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+#enfoque .eyebrow { color: var(--gold-bright); }
+#enfoque .eyebrow::before { background: var(--gold); }
+#enfoque h2 { color: var(--anchor-text); }
+#enfoque h2 em { color: var(--gold-bright); }
 
 .why-intro { display: grid; grid-template-columns: 1fr; margin-bottom: 3.2rem; text-align: center; justify-items: center; }
 .why-intro .approach-copy { max-width: 660px; }
 .why-intro .approach-copy .eyebrow { justify-content: center; }
 .why-intro .approach-copy .eyebrow::before { display: none; }
-.why-intro .approach-copy p { color: var(--ink-dim); font-size: 1.08rem; line-height: 1.9; margin-bottom: 1.1rem; margin-left: auto; margin-right: auto; }
+.why-intro .approach-copy p { color: var(--anchor-text-dim); font-size: 1.08rem; line-height: 1.9; margin-bottom: 1.1rem; margin-left: auto; margin-right: auto; }
 
 /* ── Franja de autoridad — hechos reales, sin cajas, tratamiento editorial ── */
 .authority-stats {
@@ -524,19 +578,26 @@ html {
 }
 .authority-stat {
   flex: 1; padding: 0 2rem; text-align: center;
-  border-left: 1px solid var(--border);
+  border-left: 1px solid var(--anchor-border);
 }
 .authority-stat:first-child { border-left: none; }
 .authority-stat .num {
   font-family: var(--font-display); font-size: clamp(1.8rem, 3vw, 2.4rem);
-  color: var(--gold-deep); line-height: 1; margin-bottom: 0.5rem;
+  color: var(--gold-bright); line-height: 1; margin-bottom: 0.5rem;
 }
 .authority-stat .num-word { font-size: clamp(1.3rem, 2.1vw, 1.6rem); font-style: italic; }
-.authority-stat .label { font-size: 0.88rem; color: var(--ink-dim); line-height: 1.5; }
+.authority-stat .label { font-size: 0.88rem; color: var(--anchor-text-dim); line-height: 1.5; }
+
+/* Acento dorado que se dibuja bajo cada cifra al revelarse (sincronizado con .reveal-scale existente) */
+.authority-stat .num::after {
+  content: ''; display: block; width: 0; height: 1px; background: var(--gold);
+  margin: 0.55rem auto 0; transition: width 0.6s var(--ease-out) 0.25s;
+}
+.authority-stats.visible .authority-stat .num::after { width: 30px; }
 
 @media (max-width: 700px) {
   .authority-stats { flex-direction: column; gap: 1.6rem; }
-  .authority-stat { border-left: none; border-top: 1px solid var(--border); padding: 1.4rem 0 0; }
+  .authority-stat { border-left: none; border-top: 1px solid var(--anchor-border); padding: 1.4rem 0 0; }
   .authority-stat:first-child { border-top: none; padding-top: 0; }
 }
 /* ═══════════════════════════════════════════════════════════
@@ -703,8 +764,12 @@ html {
 .faq-item[open] summary .icon::after { transform: translateX(-50%) rotate(90deg); opacity: 0; }
 .faq-item[open] summary { color: var(--gold-deep); }
 .faq-item p {
-  color: var(--ink-dim); font-size: 1.02rem; line-height: 1.8; margin-top: 1rem; max-width: 62ch;
+  display: block; color: var(--ink-dim); font-size: 1.02rem; line-height: 1.8; max-width: 62ch;
+  overflow: hidden; max-height: 0; opacity: 0; margin-top: 0;
+  transition: max-height 0.45s var(--ease), opacity 0.3s var(--ease), margin-top 0.45s var(--ease);
 }
+.faq-item[open] p { max-height: 400px; opacity: 1; margin-top: 1rem; }
+@media (prefers-reduced-motion: reduce) { .faq-item p { transition: none; } }
 
 /* ═══════════════════════════════════════════════════════════
    WHATSAPP FLOTANTE
@@ -780,7 +845,10 @@ html {
 #contacto::before {
   content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
   width: 60%; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  animation: cta-line-breathe 5s ease-in-out infinite;
 }
+@keyframes cta-line-breathe { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { #contacto::before { animation: none; opacity: 1; } }
 #contacto .eyebrow { color: var(--gold-bright); }
 #contacto .eyebrow::before { background: var(--gold); }
 #contacto h2 { color: var(--anchor-text); }

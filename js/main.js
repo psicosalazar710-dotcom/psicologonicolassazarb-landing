@@ -8,7 +8,13 @@ if (typeof SITE_CONFIG !== 'undefined') {
     const key = el.dataset.cfg;
     const attr = el.dataset.cfgAttr;
     let value;
-    if (key === 'whatsappUrl') value = SITE_CONFIG.whatsappUrl();
+    if (key === 'whatsappUrl') {
+      // data-cfg-msg-key permite que un enlace use un mensaje distinto al
+      // default (ej. "whatsappMessageCustom"), sin crear un segundo sistema.
+      const msgKey = el.dataset.cfgMsgKey;
+      const msg = msgKey ? msgKey.split('.').reduce((o, k) => (o ? o[k] : undefined), SITE_CONFIG) : undefined;
+      value = SITE_CONFIG.whatsappUrl(msg);
+    }
     else value = key.split('.').reduce((o, k) => (o ? o[k] : undefined), SITE_CONFIG);
     if (value === undefined) return;
     if (attr) el.setAttribute(attr, value);
@@ -72,7 +78,8 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
    la imagen, para no chocar con el zoom de :hover que ya tiene la imagen. */
 if (!reduceMotion) {
   const parallaxFrames = document.querySelectorAll('.about-collage .img-frame');
-  if (parallaxFrames.length) {
+  const heroParallax = document.querySelector('.hero-portrait-parallax');
+  if (parallaxFrames.length || heroParallax) {
     let ticking = false;
     const updateParallax = () => {
       const vh = window.innerHeight;
@@ -82,6 +89,12 @@ if (!reduceMotion) {
         const rate = i % 2 === 0 ? 18 : -18;
         frame.style.transform = `translateY(${(progress * rate).toFixed(2)}px)`;
       });
+      // Hero: desplazamiento más contenido (~2-4%), un solo elemento, sin alternancia.
+      if (heroParallax) {
+        const rect = heroParallax.getBoundingClientRect();
+        const progress = (rect.top + rect.height / 2 - vh / 2) / vh;
+        heroParallax.style.transform = `translateY(${(progress * 10).toFixed(2)}px)`;
+      }
       ticking = false;
     };
     window.addEventListener('scroll', () => {
